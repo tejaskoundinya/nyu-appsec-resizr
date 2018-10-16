@@ -31,8 +31,9 @@ public class Resizer {
         }
         int shortest = (sourceImage.getHeight() <= sourceImage.getWidth()) ? sourceImage.getHeight() : sourceImage.getWidth();
         BufferedImage destinationImage = resize(sourceImage, imageType, shortest);
+        String targetFormat = getImageExtension(destinationPath);
         try {
-            ImageIO.write(destinationImage, "png", new File(destinationPath));
+            ImageIO.write(destinationImage, targetFormat, new File(destinationPath));
         } catch (IOException e) {
             return e.getMessage();
         }
@@ -52,6 +53,29 @@ public class Resizer {
         graphics.drawImage(sourceImage, 0, 0, size, size, null);
         graphics.dispose();
         return bufferedImage;
+    }
+
+    /**
+     * Method to get the image extension
+     * @param path The path of the destination image
+     * @return The extension of the image
+     */
+    private String getImageExtension(String path) {
+        String ext = "png";
+        String[] parts = path.split("[.]");
+        if (parts.length > 1) {
+            switch (parts[parts.length - 1]) {
+                case "jpeg":
+                    ext = "jpg";
+                    break;
+                case "jpg":
+                    ext = "jpg";
+                    break;
+                default:
+                    ext = "png";
+            }
+        }
+        return ext;
     }
 
     /**
