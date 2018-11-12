@@ -40,8 +40,8 @@ public class ImageController {
                 image.transferTo(imageIOHelper.createFile(fileName));
                 String[] split = fileName.split("/");
                 String name = split[split.length - 1];
-                String resizedFileName = name.replaceAll("^", "resized_");
-                resizer.resize("" + fileName, resizedFileName);
+                String resizedFileName = name.replaceAll("^", "/images/resized_");
+                resizer.resize("/images/" + fileName, resizedFileName);
                 String url = imageUtil.urlForImage(fileName);
                 // TODO: Set url to image object
             } catch (IOException e) {

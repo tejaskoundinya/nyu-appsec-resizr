@@ -1,5 +1,7 @@
 package edu.nyu.resizrweb.util;
 
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
@@ -24,8 +26,8 @@ public class Resizer {
         BufferedImage sourceImage = null;
         int imageType;
         try {
-            File sourceFile = new File(getClass().getResource(sourcePath).getFile());
-            sourceImage = ImageIO.read(sourceFile);
+            Resource sourceResource = new ClassPathResource(sourcePath);
+            sourceImage = ImageIO.read(sourceResource.getInputStream());
             imageType = sourceImage.getType();
             if (imageType == 0) {
                 imageType = BufferedImage.TYPE_INT_ARGB;
