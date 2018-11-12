@@ -4,6 +4,7 @@ import edu.nyu.resizrweb.dto.SuccessMessageDto;
 import edu.nyu.resizrweb.entity.User;
 import edu.nyu.resizrweb.io.impl.ImageIOHelper;
 import edu.nyu.resizrweb.util.ImageUtil;
+import edu.nyu.resizrweb.util.Resizer;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +26,22 @@ public class ImageController {
     @Autowired
     private ImageUtil imageUtil;
 
+    @Autowired
+    private Resizer resizer;
+
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public ResponseEntity<?> uploadImage(@RequestParam(value = "image", required = false) MultipartFile zoneImage) {
+    public ResponseEntity<?> uploadImage(@RequestParam(value = "width") Integer width, @RequestParam(value = "image", required = true) MultipartFile image) {
         log.trace("Entered upload image endpoint");
         User user = new User();
-        if(zoneImage != null) {
+        user.setUsername("test");
+        if(image != null) {
             try {
                 String fileName = imageUtil.fileNameFor(user);
-                zoneImage.transferTo(imageIOHelper.createFile(fileName));
+                image.transferTo(imageIOHelper.createFile(fileName));
+                String[] split = fileName.split("/");
+                String name = split[split.length - 1];
+                String resizedFileName = name.replaceAll("^", "resized_");
+                resizer.resize("" + fileName, resizedFileName);
                 String url = imageUtil.urlForImage(fileName);
                 // TODO: Set url to image object
             } catch (IOException e) {

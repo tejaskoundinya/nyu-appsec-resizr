@@ -31,9 +31,9 @@
     <div class="starter-template">
         <h1>Upload Image</h1>
         <h2>Enter the width of the image to be resized to</h2>
-        <form action="processupload.jsp" method="post">
-            <input type="text" name="width" placeholder="Width (in px)"/><br/><br/>
-            <input type="file" name="imagefile" placeholder="Image"><br/><br/>
+        <form action="/image/upload" method="post", enctype="multipart/form-data">
+            <input type="number" name="width" placeholder="Width (in px)"/><br/><br/>
+            <input type="file" name="image" placeholder="Image"><br/><br/>
             <input type="submit" value="Upload and Resize"/>
         </form>
     </div>
