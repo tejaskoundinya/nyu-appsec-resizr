@@ -1,5 +1,7 @@
 package edu.nyu.resizrweb.util;
 
+import edu.nyu.resizrweb.io.impl.ImageIOHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -9,25 +11,27 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Class that contains methods to resize an image
  */
 @Component
 public class Resizer {
+    @Autowired
+    private ImageIOHelper imageIOHelper;
     /**
      * A public method that resizes an image in the sourcePath and writes it into destinationPath
      * with size n x n where n is height or the width of the source image, whichever is smaller
-     * @param sourcePath The path of the source image to be resized
+     * @param sourceStream The source image
      * @param destinationPath The destination of the resized image
      * @return A message of success or failure
      */
-    public String resize(String sourcePath, String destinationPath) {
+    public String resize(InputStream sourceStream, String destinationPath) {
         BufferedImage sourceImage = null;
         int imageType;
         try {
-            Resource sourceResource = new ClassPathResource(sourcePath);
-            sourceImage = ImageIO.read(sourceResource.getInputStream());
+            sourceImage = ImageIO.read(sourceStream);
             imageType = sourceImage.getType();
             if (imageType == 0) {
                 imageType = BufferedImage.TYPE_INT_ARGB;
@@ -39,7 +43,7 @@ public class Resizer {
         BufferedImage destinationImage = resize(sourceImage, imageType, shortest);
         String targetFormat = getImageExtension(destinationPath);
         try {
-            ImageIO.write(destinationImage, targetFormat, new File(destinationPath));
+            ImageIO.write(destinationImage, targetFormat, imageIOHelper.createFile(destinationPath));
         } catch (IOException e) {
             return e.getMessage();
         }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @Log4j
 @RestController
@@ -37,11 +38,11 @@ public class ImageController {
         if(image != null) {
             try {
                 String fileName = imageUtil.fileNameFor(user);
-                image.transferTo(imageIOHelper.createFile(fileName));
                 String[] split = fileName.split("/");
                 String name = split[split.length - 1];
-                String resizedFileName = name.replaceAll("^", "/images/resized_");
-                resizer.resize("/images/" + fileName, resizedFileName);
+                String resizedFileName = name.replaceAll("^", "resized_");
+                resizer.resize(image.getInputStream(), resizedFileName);
+                image.transferTo(imageIOHelper.createFile(fileName));
                 String url = imageUtil.urlForImage(fileName);
                 // TODO: Set url to image object
             } catch (IOException e) {
