@@ -19,4 +19,9 @@ public class WebController {
     public String login(Map<String, Object> model) {
         return "login";
     }
+
+    @RequestMapping("/upload")
+    public String uploadImage(Map<String, Object> model) {
+        return "upload";
+    }
 }
