@@ -27,7 +27,7 @@ public class Resizer {
      * @param destinationPath The destination of the resized image
      * @return A message of success or failure
      */
-    public String resize(InputStream sourceStream, String destinationPath) {
+    public String resize(InputStream sourceStream, String destinationPath, Integer width) {
         BufferedImage sourceImage = null;
         int imageType;
         try {
@@ -39,8 +39,8 @@ public class Resizer {
         } catch (Exception e) {
             return "Error in loading the image";
         }
-        int shortest = (sourceImage.getHeight() <= sourceImage.getWidth()) ? sourceImage.getHeight() : sourceImage.getWidth();
-        BufferedImage destinationImage = resize(sourceImage, imageType, shortest);
+//        int shortest = (sourceImage.getHeight() <= sourceImage.getWidth()) ? sourceImage.getHeight() : sourceImage.getWidth();
+        BufferedImage destinationImage = resize(sourceImage, imageType, width);//shortest);
         String targetFormat = getImageExtension(destinationPath);
         try {
             ImageIO.write(destinationImage, targetFormat, imageIOHelper.createFile(destinationPath));

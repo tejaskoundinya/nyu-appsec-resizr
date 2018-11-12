@@ -8,6 +8,7 @@ import edu.nyu.resizrweb.util.Resizer;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Log4j
-@RestController
+@Controller
 @RequestMapping("/image")
 public class ImageController {
     @Autowired
@@ -41,7 +42,7 @@ public class ImageController {
                 String[] split = fileName.split("/");
                 String name = split[split.length - 1];
                 String resizedFileName = name.replaceAll("^", "resized_");
-                resizer.resize(image.getInputStream(), resizedFileName);
+                resizer.resize(image.getInputStream(), resizedFileName, width);
                 image.transferTo(imageIOHelper.createFile(fileName));
                 String url = imageUtil.urlForImage(fileName);
                 // TODO: Set url to image object
