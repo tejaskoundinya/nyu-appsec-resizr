@@ -7,11 +7,14 @@ import edu.nyu.resizrweb.entity.User;
 import edu.nyu.resizrweb.io.impl.ImageIOHelper;
 import edu.nyu.resizrweb.repository.ImageRepository;
 import edu.nyu.resizrweb.repository.UserRepository;
+import edu.nyu.resizrweb.service.UserService;
 import edu.nyu.resizrweb.util.ImageUtil;
 import edu.nyu.resizrweb.util.Resizer;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,11 +45,19 @@ public class ImageController {
     @Autowired
     private ImageRepository imageRepository;
 
+    @Autowired
+    private UserService userService;
+
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public ResponseEntity<?> uploadImage(@RequestParam(value = "width") Integer width, @RequestParam(value = "image", required = true) MultipartFile image) {
+    public String uploadImage(@RequestParam(value = "width") Integer width, @RequestParam(value = "image", required = true) MultipartFile image) {
         log.trace("Entered upload image endpoint");
-        User user = new User();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findByUsername(auth.getName());
+//        User user = new User();
         user = userRepository.findByUsername("test");
+        if (!image.getContentType().equalsIgnoreCase("image/jpeg") && !image.getContentType().equalsIgnoreCase("image/png")) {
+            return "error";
+        }
         if(image != null) {
             try {
                 String fileName = imageUtil.fileNameFor(user);
@@ -74,8 +85,9 @@ public class ImageController {
             } catch (IOException e) {
                 // TODO: Handle error
                 log.error("File error: " + e);
+                return "error";
             }
         }
-        return ResponseEntity.ok(new SuccessMessageDto("Success"));
+        return "redirect:/dashboard";
     }
 }

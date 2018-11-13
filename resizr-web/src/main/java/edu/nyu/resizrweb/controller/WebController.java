@@ -1,8 +1,10 @@
 package edu.nyu.resizrweb.controller;
 
 import edu.nyu.resizrweb.dto.RegistrationDto;
+import edu.nyu.resizrweb.entity.ImageEntity;
 import edu.nyu.resizrweb.entity.Role;
 import edu.nyu.resizrweb.entity.User;
+import edu.nyu.resizrweb.repository.ImageRepository;
 import edu.nyu.resizrweb.repository.RoleRepository;
 import edu.nyu.resizrweb.repository.UserRepository;
 import edu.nyu.resizrweb.service.UserService;
@@ -32,12 +34,15 @@ public class WebController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ImageRepository imageRepository;
+
     @RequestMapping("/")
     public String home(Map<String, Object> model) {
         return "home";
     }
 
-    @RequestMapping("/login")
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Map<String, Object> model) {
         return "login";
     }
@@ -66,5 +71,18 @@ public class WebController {
             return "register";
         }
         return "redirect:/";
+    }
+
+    @RequestMapping(value = "/history", method = RequestMethod.GET)
+    public String showHistory(Model model) {
+        User user = userService.findByUsername("test");
+        List<ImageEntity> imageEntities = imageRepository.findAllByUser(user);
+        model.addAttribute("images", imageEntities);
+        return "history";
+    }
+
+    @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
+    public String showDashboard() {
+        return "dashboard";
     }
 }

@@ -31,9 +31,9 @@
     <div class="starter-template">
         <h1>Login</h1>
         <form action="/login" method="post">
-            <input type="text" name="username" placeholder="Username"/><br/><br/>
-            <input type="password" name="password" placeholder="Password"/><br/><br/>
-            <input type="submit" value="Login"/>
+            <input type="text" id="username" name="username" placeholder="Username"/><br/><br/>
+            <input type="password" id="password" name="password" placeholder="Password"/><br/><br/>
+            <input type="Submit" name="Submit" value="Login"/>
         </form>
     </div>
 

@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-public class User implements UserDetails {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -19,7 +19,7 @@ public class User implements UserDetails {
     private Date createdTime;
 
     @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Role> authorities;
+    private List<Role> roles;
 
     public Long getId() {
         return id;
@@ -53,32 +53,11 @@ public class User implements UserDetails {
         this.createdTime = createdTime;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+    public List<Role> getRoles() {
+        return roles;
     }
 
-    public void setAuthorities(List<Role> authorities) {
-        this.authorities = authorities;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }
