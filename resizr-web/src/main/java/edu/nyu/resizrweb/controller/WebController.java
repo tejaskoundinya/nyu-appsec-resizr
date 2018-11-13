@@ -5,6 +5,7 @@ import edu.nyu.resizrweb.entity.Role;
 import edu.nyu.resizrweb.entity.User;
 import edu.nyu.resizrweb.repository.RoleRepository;
 import edu.nyu.resizrweb.repository.UserRepository;
+import edu.nyu.resizrweb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,9 @@ public class WebController {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping("/")
     public String home(Map<String, Object> model) {
@@ -54,13 +58,10 @@ public class WebController {
     public String registration(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password) {
         User user = new User();
         if (userRepository.findByUsername(username) == null) {
-            List<Role> roles = new ArrayList<Role>();
-            roles.add(roleRepository.getByAuthority("User"));
             user.setUsername(username);
             user.setPassword(password);
-            user.setAuthorities(roles);
             user.setCreatedTime(new Date());
-            userRepository.save(user);
+            userService.save(user);
         } else {
             return "register";
         }

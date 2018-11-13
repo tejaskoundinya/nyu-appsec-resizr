@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -23,7 +24,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setAuthorities(new ArrayList<Role>((ArrayList<Role>)roleRepository.findAll()));
+        Role role = roleRepository.getByAuthority("USER");
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        user.setAuthorities(roles);
         userRepository.save(user);
     }
 
