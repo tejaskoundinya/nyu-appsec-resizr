@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,9 +43,16 @@ public class WebController {
         return "home";
     }
 
+//    @RequestMapping(value = "/login", method = RequestMethod.GET)
+//    public String login(Map<String, Object> model) {
+//        return "login";
+//    }
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(Map<String, Object> model) {
-        return "login";
+    public ModelAndView login(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login");
+        return modelAndView;
     }
 
     @RequestMapping("/upload")
@@ -66,6 +74,7 @@ public class WebController {
             user.setUsername(username);
             user.setPassword(password);
             user.setCreatedTime(new Date());
+            user.setEnabled(1);
             userService.save(user);
         } else {
             return "register";

@@ -55,10 +55,10 @@ public class ImageController {
         User user = userService.findByUsername(auth.getName());
 //        User user = new User();
         user = userRepository.findByUsername("test");
-        if (!image.getContentType().equalsIgnoreCase("image/jpeg") && !image.getContentType().equalsIgnoreCase("image/png")) {
-            return "error";
-        }
         if(image != null) {
+            if (!image.getContentType().equalsIgnoreCase("image/jpeg") && !image.getContentType().equalsIgnoreCase("image/png")) {
+                return "error";
+            }
             try {
                 String fileName = imageUtil.fileNameFor(user);
                 String[] split = fileName.split("/");

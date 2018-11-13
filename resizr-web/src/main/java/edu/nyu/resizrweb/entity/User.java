@@ -17,6 +17,7 @@ public class User {
     private String username;
     private String password;
     private Date createdTime;
+    private Integer enabled;
 
     @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Role> roles;
@@ -59,5 +60,13 @@ public class User {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public Integer getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Integer enabled) {
+        this.enabled = enabled;
     }
 }
