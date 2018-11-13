@@ -63,14 +63,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.
                 authorizeRequests()
-                .antMatchers("/", "/resources/**", "/upload", "/image/upload", "/dashboard", "/history").permitAll()
+                .antMatchers("/").permitAll()//, "/upload", "/image/upload", "/dashboard", "/history").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/register", "/processregistration").permitAll()
                 .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN").anyRequest()
                 .authenticated().and().csrf().disable().formLogin()
                 .loginPage("/login").failureUrl("/login?error=true")
                 //.defaultSuccessUrl("/admin/home")
-                .defaultSuccessUrl("/home")
+                .defaultSuccessUrl("/dashboard")
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .and().logout()
@@ -90,5 +90,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .logout()
 //                .permitAll()
 //                .and().csrf().disable();//.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+                .ignoring()
+                .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/webjars/**");
     }
 }

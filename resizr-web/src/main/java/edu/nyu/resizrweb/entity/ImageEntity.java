@@ -3,6 +3,7 @@ package edu.nyu.resizrweb.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @Entity
@@ -17,4 +18,8 @@ public class ImageEntity {
     private String uploadUrl;
 
     private String resizedUrl;
+
+    private Date uploadTime;
+
+    private Integer width;
 }

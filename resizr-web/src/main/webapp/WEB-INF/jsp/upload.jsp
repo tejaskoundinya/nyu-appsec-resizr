@@ -21,8 +21,11 @@
 <nav class="navbar navbar-inverse">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Resizr</a>
+            <a class="navbar-brand" href="/">Resizr</a>
         </div>
+        <form class="navbar-form navbar-right" action="/logout" method="get">
+            <button type="submit" class="btn btn-default">Logout</button>
+        </form>
     </div>
 </nav>
 

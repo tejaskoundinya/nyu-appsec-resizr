@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 @Log4j
 @Controller
@@ -80,6 +81,8 @@ public class ImageController {
                 imageEntity.setUser(user);
                 imageEntity.setUploadUrl(uploadUrl);
                 imageEntity.setResizedUrl(resizedUrl);
+                imageEntity.setUploadTime(new Date());
+                imageEntity.setWidth(width);
                 imageEntity = imageRepository.save(imageEntity);
                 log.info("Image uploaded with ID: " + imageEntity.getId());
             } catch (IOException e) {

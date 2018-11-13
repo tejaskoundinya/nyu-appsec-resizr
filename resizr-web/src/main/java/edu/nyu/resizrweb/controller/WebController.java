@@ -40,7 +40,7 @@ public class WebController {
 
     @RequestMapping("/")
     public String home(Map<String, Object> model) {
-        return "home";
+        return "redirect:/dashboard";
     }
 
 //    @RequestMapping(value = "/login", method = RequestMethod.GET)
