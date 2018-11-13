@@ -1,8 +1,12 @@
 package edu.nyu.resizrweb.controller;
 
+import com.google.common.hash.Hashing;
 import edu.nyu.resizrweb.dto.SuccessMessageDto;
+import edu.nyu.resizrweb.entity.ImageEntity;
 import edu.nyu.resizrweb.entity.User;
 import edu.nyu.resizrweb.io.impl.ImageIOHelper;
+import edu.nyu.resizrweb.repository.ImageRepository;
+import edu.nyu.resizrweb.repository.UserRepository;
 import edu.nyu.resizrweb.util.ImageUtil;
 import edu.nyu.resizrweb.util.Resizer;
 import lombok.extern.log4j.Log4j;
@@ -17,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @Log4j
 @Controller
@@ -31,21 +36,41 @@ public class ImageController {
     @Autowired
     private Resizer resizer;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ImageRepository imageRepository;
+
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public ResponseEntity<?> uploadImage(@RequestParam(value = "width") Integer width, @RequestParam(value = "image", required = true) MultipartFile image) {
         log.trace("Entered upload image endpoint");
         User user = new User();
-        user.setUsername("test");
+        user = userRepository.findByUsername("test");
         if(image != null) {
             try {
                 String fileName = imageUtil.fileNameFor(user);
                 String[] split = fileName.split("/");
                 String name = split[split.length - 1];
                 String resizedFileName = name.replaceAll("^", "resized_");
-                resizer.resize(image.getInputStream(), resizedFileName, width);
-                image.transferTo(imageIOHelper.createFile(fileName));
-                String url = imageUtil.urlForImage(fileName);
-                // TODO: Set url to image object
+                String ext = resizedFileName.split("[.]")[resizedFileName.split("[.]").length - 1];
+                String resizedHash = Hashing.sha256()
+                        .hashString(resizedFileName, StandardCharsets.UTF_8)
+                        .toString();
+                resizer.resize(image.getInputStream(), resizedHash + "." + ext, width);
+                String originalHash = Hashing.sha256()
+                        .hashString(fileName, StandardCharsets.UTF_8)
+                        .toString();
+                image.transferTo(imageIOHelper.createFile(originalHash + "." + ext));
+
+                String uploadUrl = imageUtil.urlForImage(originalHash + "." + ext);
+                String resizedUrl = imageUtil.urlForImage(resizedHash + "." + ext);
+                ImageEntity imageEntity = new ImageEntity();
+                imageEntity.setUser(user);
+                imageEntity.setUploadUrl(uploadUrl);
+                imageEntity.setResizedUrl(resizedUrl);
+                imageEntity = imageRepository.save(imageEntity);
+                log.info("Image uploaded with ID: " + imageEntity.getId());
             } catch (IOException e) {
                 // TODO: Handle error
                 log.error("File error: " + e);
