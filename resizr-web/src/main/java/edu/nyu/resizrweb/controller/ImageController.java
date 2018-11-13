@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,7 +51,7 @@ public class ImageController {
     private UserService userService;
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public String uploadImage(@RequestParam(value = "width") Integer width, @RequestParam(value = "image", required = true) MultipartFile image) {
+    public String uploadImage(@RequestParam(value = "width") Integer width, @RequestParam(value = "image", required = true) MultipartFile image, Model model) {
         log.trace("Entered upload image endpoint");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
@@ -58,6 +59,7 @@ public class ImageController {
         user = userRepository.findByUsername("test");
         if(image != null) {
             if (!image.getContentType().equalsIgnoreCase("image/jpeg") && !image.getContentType().equalsIgnoreCase("image/png")) {
+                model.addAttribute("message", "The file you uploaded it not an image. Please try again with an image file.");
                 return "error";
             }
             try {
@@ -88,6 +90,7 @@ public class ImageController {
             } catch (IOException e) {
                 // TODO: Handle error
                 log.error("File error: " + e);
+                model.addAttribute("message", "There was an error with reading the file");
                 return "error";
             }
         }
