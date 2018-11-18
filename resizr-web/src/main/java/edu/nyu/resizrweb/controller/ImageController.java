@@ -52,7 +52,7 @@ public class ImageController {
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public String uploadImage(@RequestParam(value = "width") Integer width, @RequestParam(value = "image", required = true) MultipartFile image, Model model) {
-        log.trace("Entered upload image endpoint");
+        log.trace("Entered /image/upload endpoint");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
 //        User user = new User();
@@ -71,11 +71,13 @@ public class ImageController {
                 String resizedHash = Hashing.sha256()
                         .hashString(resizedFileName, StandardCharsets.UTF_8)
                         .toString();
+                log.debug("Trying to resize image to size: " + width + " x " + width);
                 resizer.resize(image.getInputStream(), resizedHash + "." + ext, width);
                 String originalHash = Hashing.sha256()
                         .hashString(fileName, StandardCharsets.UTF_8)
                         .toString();
                 image.transferTo(imageIOHelper.createFile(originalHash + "." + ext));
+                log.debug("Image resized and moved to image repository");
 
                 String uploadUrl = imageUtil.urlForImage(originalHash + "." + ext);
                 String resizedUrl = imageUtil.urlForImage(resizedHash + "." + ext);
@@ -86,13 +88,17 @@ public class ImageController {
                 imageEntity.setUploadTime(new Date());
                 imageEntity.setWidth(width);
                 imageEntity = imageRepository.save(imageEntity);
-                log.info("Image uploaded with ID: " + imageEntity.getId());
+                log.info("Image uploaded with ID: " + imageEntity.getId() + " by user: " + user.getUsername());
             } catch (IOException e) {
                 // TODO: Handle error
-                log.error("File error: " + e);
+                log.error("File upload error: " + e + " by user: " + user.getUsername());
                 model.addAttribute("message", "There was an error with reading the file");
                 return "error";
             }
+        } else {
+            log.error("User " + user.getUsername() + " tried to upload with not image selected");
+            model.addAttribute("message", "No image uploaded");
+            return "error";
         }
         return "redirect:/dashboard";
     }

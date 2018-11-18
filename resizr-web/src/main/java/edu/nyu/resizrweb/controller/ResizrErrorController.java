@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ResizrErrorController implements ErrorController {
     @RequestMapping("/error")
     public String handleError(Model model) {
+        log.trace("Entered /error endpoint");
         model.addAttribute("message", "There was an error");
         return "error";
     }

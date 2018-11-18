@@ -8,6 +8,7 @@ import edu.nyu.resizrweb.repository.ImageRepository;
 import edu.nyu.resizrweb.repository.RoleRepository;
 import edu.nyu.resizrweb.repository.UserRepository;
 import edu.nyu.resizrweb.service.UserService;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import java.util.Map;
 /**
  * Parts of jsp code borrowed from https://www.mkyong.com/spring-boot/spring-boot-hello-world-example-jsp/
  */
+@Log4j
 @Controller
 public class WebController {
     @Autowired
@@ -40,16 +42,14 @@ public class WebController {
 
     @RequestMapping("/")
     public String home(Map<String, Object> model) {
+        log.trace("Entered / endpoint");
         return "redirect:/dashboard";
     }
 
-//    @RequestMapping(value = "/login", method = RequestMethod.GET)
-//    public String login(Map<String, Object> model) {
-//        return "login";
-//    }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView login(){
+        log.trace("Entered /login endpoint");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
         return modelAndView;
@@ -57,11 +57,13 @@ public class WebController {
 
     @RequestMapping("/upload")
     public String uploadImage(Map<String, Object> model) {
+        log.trace("Entered /upload endpoint");
         return "upload";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String registration(Model model) {
+        log.trace("Entered /register endpoint");
         model.addAttribute("userForm", new User());
 
         return "register";
@@ -69,6 +71,8 @@ public class WebController {
 
     @RequestMapping(value = "/processregistration", method = RequestMethod.POST)
     public String registration(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password) {
+        log.trace("Entered /processregistration endpoint");
+        log.debug("New user registration request with data: " + username);
         User user = new User();
         if (userRepository.findByUsername(username) == null) {
             user.setUsername(username);
@@ -77,6 +81,7 @@ public class WebController {
             user.setEnabled(1);
             userService.save(user);
         } else {
+            log.debug("Trying to register user with username \'" + username + "\', which already exists. Aborting.");
             return "register";
         }
         return "redirect:/";
@@ -84,6 +89,7 @@ public class WebController {
 
     @RequestMapping(value = "/history", method = RequestMethod.GET)
     public String showHistory(Model model) {
+        log.trace("Entered /history endpoint");
         User user = userService.findByUsername("test");
         List<ImageEntity> imageEntities = imageRepository.findAllByUser(user);
         model.addAttribute("images", imageEntities);
@@ -92,6 +98,7 @@ public class WebController {
 
     @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
     public String showDashboard() {
+        log.trace("Entered /dashboard endpoint");
         return "dashboard";
     }
 }
