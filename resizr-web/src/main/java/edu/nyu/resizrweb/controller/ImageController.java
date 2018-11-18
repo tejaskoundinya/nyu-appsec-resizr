@@ -55,10 +55,14 @@ public class ImageController {
         log.trace("Entered /image/upload endpoint");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
-//        User user = new User();
-        user = userRepository.findByUsername("test");
+        if (width <= 0) {
+            log.error("User with username: " + user.getUsername() + " tried to resize image to 0 pixels");
+            model.addAttribute("message", "Please enter a number greater than 0 as width of the resized image");
+            return "error";
+        }
         if(image != null) {
             if (!image.getContentType().equalsIgnoreCase("image/jpeg") && !image.getContentType().equalsIgnoreCase("image/png")) {
+                log.error("User with username: " + user.getUsername() + " uploaded a non image file");
                 model.addAttribute("message", "The file you uploaded it not an image. Please try again with an image file.");
                 return "error";
             }
