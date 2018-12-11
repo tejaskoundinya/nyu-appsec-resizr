@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html lang="en">
 <head>
 
@@ -30,11 +31,11 @@
 
     <div class="starter-template">
         <h1>Login</h1>
-        <form action="/login" method="post">
+        <form:form action="/login" method="post">
             <input type="text" id="username" name="username" placeholder="Username"/><br/><br/>
             <input type="password" id="password" name="password" placeholder="Password"/><br/><br/>
             <input type="Submit" name="Submit" value="Login"/>
-        </form>
+        </form:form>
     </div>
 
 </div>

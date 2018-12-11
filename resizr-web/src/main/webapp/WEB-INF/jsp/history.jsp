@@ -23,9 +23,9 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="/">Resizr</a>
         </div>
-        <form class="navbar-form navbar-right" action="/logout" method="get">
+        <form:form class="navbar-form navbar-right" action="/logout" method="get">
             <button type="submit" class="btn btn-default">Logout</button>
-        </form>
+        </form:form>
     </div>
 </nav>
 

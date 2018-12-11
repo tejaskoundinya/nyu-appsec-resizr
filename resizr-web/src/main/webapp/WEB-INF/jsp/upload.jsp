@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html lang="en">
 <head>
 
@@ -23,9 +24,9 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="/">Resizr</a>
         </div>
-        <form class="navbar-form navbar-right" action="/logout" method="get">
+        <form:form class="navbar-form navbar-right" action="/logout" method="get">
             <button type="submit" class="btn btn-default">Logout</button>
-        </form>
+        </form:form>
     </div>
 </nav>
 
@@ -34,11 +35,11 @@
     <div class="starter-template">
         <h1>Upload Image</h1>
         <h2>Enter the width of the image to be resized to</h2>
-        <form action="/image/upload" method="post", enctype="multipart/form-data">
+        <form:form action="/image/upload" method="post" enctype="multipart/form-data">
             <input type="number" name="width" placeholder="Width (in px)"/><br/><br/>
             <input type="file" name="image" placeholder="Image"><br/><br/>
             <input type="submit" value="Upload and Resize"/>
-        </form>
+        </form:form>
     </div>
 
 </div>
